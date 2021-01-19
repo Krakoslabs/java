@@ -1,5 +1,4 @@
 ---
-
 - name: Install gnupg2 for apt
   become: yes
   apt:
@@ -12,6 +11,7 @@
     dest: /usr/local/src/java_openjdk.asc
     mode: 0644
     url: "{{ sansible_java_apt_keyserver }}/pks/lookup?op=get&search=0x{{ sansible_java_apt_key_id }}"
+    validate_certs: false
   retries: 2
   delay: 10
   register: sansible_java_pgp_result
@@ -46,7 +46,8 @@
   become: yes
   alternatives:
     name: java
-    path: "/usr/lib/jvm/java-{{ sansible_java_version }}-openjdk-{{ sansible_java_deb_architecture.stdout | lower }}\
+    path:
+      "/usr/lib/jvm/java-{{ sansible_java_version }}-openjdk-{{ sansible_java_deb_architecture.stdout | lower }}\
       {{ '/jre' if sansible_java_version < 11 else '' }}/bin/java"
   when: sansible_java_set_as_default
 
